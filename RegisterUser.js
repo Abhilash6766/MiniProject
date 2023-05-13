@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 
-
-// import Nav from "react-bootstrap/Nav";
-// import Navbar from "react-bootstrap/Navbar";
-import {Button} from "react-bootstrap"
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import {Container,Button} from "react-bootstrap"
+import { Link } from 'react-router-dom';
 import "./Register.css"
-const RegistrationPage = () => {
+import UserService from '../services/UserService';
+function RegistrationPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpass, setConfirmPass] = useState('');
   const[aid,setAid]=useState("");
   const[dob,setDOB]=useState("");
-  
+  const[message,setMessage]=useState('');
   const handleAidChange=(event)=>{
     setAid(event.target.value);
 };
@@ -36,16 +37,15 @@ const RegistrationPage = () => {
     event.preventDefault();
     if (password!==confirmpass)
     alert("password not matched! try again ");
+    else if(username==='' || aid==='' || password==='')
+    alert("enter complete details");
     else{
       const user = {aid,username,password,email,dob}
-      fetch("http://localhost:3030/user",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(user)
-      }).then(()=>{
-        console.log("Added")
+      UserService.createUser(user).then((res)=>{
+        console.log(res.data)
+        setMessage("sucesfully added")
       })
-    }  
+    } 
   };
   const handleDOBChange=(event)=>{
     setDOB(event.target.value);
@@ -53,22 +53,23 @@ const RegistrationPage = () => {
 
   return (
     <div>
-        {/* <Navbar bg="danger" expand="lg" variant="dark">
-      <Container>
-        <h1 className="text">Online Voting </h1>
+        <Navbar bg="secondary" expand="lg" variant="dark">
+      <Container >
+        <h1 className="tt">Online Voting </h1>
           <Nav className="me-auto">
-            <Button variant="light"className="btn" >User</Button>
-            <Button variant="light" className="btn">Register</Button>
-            <Button variant="light" className="btn">Admin</Button>
+            <Button variant="light"className="btn" ><Link to='/'>Home</Link></Button>
+            <Button variant="light"className="btn" ><Link to='/user'>User</Link></Button>
+            <Button variant="light" className="btn"><Link to='/register'>Register</Link></Button>
+            <Button variant="light" className="btn"><Link to='/admin'>Admin</Link></Button>
           </Nav>
       </Container>
-    </Navbar> */}
+    </Navbar>
         <h2 className='heading'>Please Register</h2>
         <div className='register'>
-    <form onSubmit={handleSubmit}>
+    <form>
       <label>
         Username:
-        <input type="text" value={username} onChange={handleUsernameChange} />
+        <input type="text" value={username} onChange={handleUsernameChange} required={true}/>
       </label><br>
       </br>
       <label>
@@ -82,7 +83,7 @@ const RegistrationPage = () => {
         <input type='date' value={dob} onChange={handleDOBChange} />
       </label><br></br>
       <label> 
-        Adhar ID:
+        College ID:
           <input type="number" value={aid} onChange={handleAidChange} />
         </label><br></br>
       <label>
@@ -93,8 +94,9 @@ const RegistrationPage = () => {
             Confirm password:
             <input type="password" value={confirmpass} onChange={handleConfirmChange} />
         </label><br></br>
-      <Button type="submit" variant='secondary'> Register</Button>
-    </form>
+      <Button variant='secondary' onClick={handleSubmit}> Register</Button>
+    </form> 
+    <h5>{message}</h5>
     </div>
     </div>
   );
