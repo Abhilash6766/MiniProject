@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-// import Nav from "react-bootstrap/Nav";
-// import Navbar from "react-bootstrap/Navbar";
-import {Button} from "react-bootstrap"
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import {Container,Button} from "react-bootstrap"
+import { Link } from 'react-router-dom';
 import "./Admin.css"
+import AddCandidate from './AddCandidate';
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const [login,setLogin] = useState(false);
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
@@ -15,27 +17,33 @@ function LoginPage() {
     setPassword(event.target.value);
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-
-    // TODO: Add code to validate username and password and handle login logic
-  };
+  
+  if(login){
+    if(username==="admin" && password==="admin"){
+      return <AddCandidate/>
+    }
+    else{
+      setLogin(false)
+      alert("You are not admin")
+    }
+  }
 
   return (
     <div>
-        {/* <Navbar bg="danger" expand="lg" variant="dark">
-      <Container>
-        <h1 className="text">Online Voting </h1>
+        <Navbar bg="secondary" expand="lg" variant="dark">
+      <Container >
+        <h1 className="tt">Online Voting </h1>
           <Nav className="me-auto">
-            <Button variant="light"className="btn" >User</Button>
-            <Button variant="light" className="btn">Register</Button>
-            <Button variant="light" className="btn">Admin</Button>
+            <Button variant="light"className="btn" ><Link to='/'>Home</Link></Button>
+            <Button variant="light"className="btn" ><Link to='/user'>User</Link></Button>
+            <Button variant="light" className="btn"><Link to='/register'>Register</Link></Button>
+            <Button variant="light" className="btn"><Link to='/admin'>Admin</Link></Button>
           </Nav>
       </Container>
-    </Navbar> */}
+    </Navbar>
     <h2 className='heading'>Admin Login</h2>
     <div className='admin'>
-      <form onSubmit={handleFormSubmit}>
+      <form>
         <label>
           Username:
           <input type="text" value={username} onChange={handleUsernameChange} />
@@ -46,11 +54,10 @@ function LoginPage() {
           <input type="password" value={password} onChange={handlePasswordChange} />
         </label>
         <br />
-        <Button type="submit" variant='secondary'>Login</Button>
+        <Button variant='secondary' onClick={()=>setLogin(true)}>Login</Button>
       </form>
       </div>
     </div>
   );
 }
-
 export default LoginPage;
